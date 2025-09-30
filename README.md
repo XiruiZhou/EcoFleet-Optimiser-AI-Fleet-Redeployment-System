@@ -10,9 +10,6 @@ The system integrates **mock data generation, demand forecasting, route optimiza
 📦 AnyAI-main
 ├── data/
 ├── src/
-├── README.md
-├── app.py
-├── requirements.txt
 │   ├── cctv_data.csv
 │   ├── equipment_location.csv
 │   ├── gps_data.csv
@@ -31,6 +28,10 @@ The system integrates **mock data generation, demand forecasting, route optimiza
 │   ├── route_vrp.py
 │   ├── shared_pool.py
 │   ├── sustainability.py
+├── README.md
+├── app.py
+├── requirements.txt
+
 
 ```
 
