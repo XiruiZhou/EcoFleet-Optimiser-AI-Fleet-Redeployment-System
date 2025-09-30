@@ -97,10 +97,12 @@ Includes:
 ---
 
 ## 🧩 Tech Stack
-- Python (pandas, numpy, plotly, matplotlib)  
-- Google OR-Tools (VRP solver)  
-- Streamlit (interactive dashboard)  
-- fpdf2 (PDF reporting)  
+📊 Data & Analysis → pandas, numpy, scikit-learn  
+📈 Visualisation → plotly, streamlit-option-menu  
+🖥️ App / Dashboard → streamlit  
+🛠️ Optimisation → ortools  
+📄 Reporting → reportlab  
+🔗 API & Utilities → requests  
 
 ---
 
