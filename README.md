@@ -7,20 +7,31 @@ The system integrates **mock data generation, demand forecasting, route optimiza
 
 ## 📂 Project Structure
 ```text
-📦 Project
+📦 AnyAI-main
 ├── data/
-│   ├── gps_data.csv
-│   ├── rental_history.csv
-│   └── traffic_weather.json
-│
 ├── src/
-│   ├── data_pipeline.py
-│   ├── demand_model.py
-│   └── report.py
-│
+├── README.md
 ├── app.py
 ├── requirements.txt
-└── README.md
+│   ├── cctv_data.csv
+│   ├── equipment_location.csv
+│   ├── gps_data.csv
+│   ├── rental_history.csv
+│   ├── report.pdf
+│   ├── shared_pool.csv
+│   ├── cctv_data.py
+│   ├── circular_economy.py
+│   ├── dashboard.py
+│   ├── data_pipeline.py
+│   ├── demand_model.py
+│   ├── equipment_location.py
+│   ├── external_api.py
+│   ├── lifecycle.py
+│   ├── report_generator.py
+│   ├── route_vrp.py
+│   ├── shared_pool.py
+│   ├── sustainability.py
+
 ```
 
 ---
