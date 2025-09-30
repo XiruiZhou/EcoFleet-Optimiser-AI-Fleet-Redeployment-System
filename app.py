@@ -268,7 +268,17 @@ def dashboard():
 
     # --- Circular Economy ---
     with tab5:
-        st.subheader("Circular Economy Recommendation")
+        st.subheader("Shared Equipment Pool (Cross-Company)")
+        st.dataframe(pool, use_container_width=True)
+
+        fig_company = px.bar(
+            pool.groupby(["company", "status"])["equipment_id"].count().reset_index(),
+            x="company", y="equipment_id", color="status",
+            title="Shared Equipment Availability by Company",
+            text_auto=True,
+            barmode="group"
+        )
+        st.plotly_chart(fig_company, use_container_width=True)
 
         if isinstance(circular, list):
             circular_df = pd.DataFrame(circular)
