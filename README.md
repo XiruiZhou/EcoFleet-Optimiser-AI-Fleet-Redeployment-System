@@ -6,100 +6,101 @@ The system integrates **mock data generation, demand forecasting, route optimiza
 ---
 
 ## 📂 Project Structure
-├── data/ # Mock data (auto-generated)
-│ ├── gps_data.csv # GPS logs (time, lat, lon, mileage, fuel)
-│ ├── rental_history.csv # Historical rental data (state, equipment, count)
-│ └── traffic_weather.json # Simulated traffic/weather API
+```text
+📦 Project
+├── data/
+│   ├── gps_data.csv
+│   ├── rental_history.csv
+│   └── traffic_weather.json
 │
 ├── src/
-│ ├── data_pipeline.py # Generate mock data
-│ ├── demand_model.py # Demand forecasting
-│ ├── route_vrp.py # Route optimization (VRP with OR-Tools)
-│ ├── lifecycle.py # Equipment lifecycle check
-│ ├── dashboard.py # Streamlit dashboard
-│ └── report.py # PDF report generator
+│   ├── data_pipeline.py
+│   ├── demand_model.py
+│   └── report.py
 │
-├── app.py # Main script (runs the full pipeline)
-├── requirements.txt # Python dependencies
-└── README.md # Project documentation
+├── app.py
+├── requirements.txt
+└── README.md
+```
 
 ---
 
 ## ⚙️ Installation
 Clone the repository and install dependencies:
-```
+
+```bash
 git clone https://github.com/<your-repo>/rpm-hire-ai.git
 cd rpm-hire-ai
 pip install -r requirements.txt
-🚀 Usage
-1. Run the full pipeline
+```
 
+---
+
+## 🚀 Usage
+
+### 1. Run the full pipeline
+```bash
 python app.py
+```
+
 This will:
+- Generate mock GPS, rental, and weather data  
+- Forecast equipment demand  
+- Optimize vehicle route  
+- Check equipment lifecycle  
+- Output a sustainability report (`data/report.pdf`)  
 
-Generate mock GPS, rental, and weather data
-
-Forecast equipment demand
-
-Optimize vehicle route
-
-Check equipment lifecycle
-
-Output a sustainability report (data/report.pdf)
-
-2. Launch the Dashboard
-
+### 2. Launch the Dashboard
+```bash
 streamlit run src/dashboard.py
+```
+
 The dashboard shows:
+- 📊 Demand forecast (bar chart by state)  
+- 🛣️ Optimal route  
+- 🔧 Equipment health status  
+- ⚖️ KPI customization sliders (cost / time / carbon)  
 
-📊 Demand forecast (bar chart by state)
+---
 
-🛣️ Optimal route
+## 📊 Example Outputs
 
-🔧 Equipment health status
-
-⚖️ KPI customization sliders (cost / time / carbon)
-
-📊 Example Outputs
-data/gps_data.csv
-
-python-repl
+**Data (data/gps_data.csv)**
+```csv
 timestamp,latitude,longitude,mileage_km,fuel_L_per_100km
 2025-09-29 12:00:00,-37.80,145.02,10,8.4
 2025-09-29 12:05:00,-37.85,145.05,14,7.9
 ...
-Dashboard (Streamlit)
+```
 
-Generated Report (data/report.pdf)
+**Dashboard (Streamlit)**  
+Interactive UI with charts and KPIs  
+
+**Generated Report (data/report.pdf)**  
 Includes:
+- Optimal route  
+- Demand forecast  
+- Equipment health status  
 
-Optimal route
+---
 
-Demand forecast
+## 🧩 Tech Stack
+- Python (pandas, numpy, plotly, matplotlib)  
+- Google OR-Tools (VRP solver)  
+- Streamlit (interactive dashboard)  
+- fpdf2 (PDF reporting)  
 
-Equipment health status
+---
 
-🧩 Tech Stack
-Python (pandas, numpy, plotly, matplotlib)
+## 💡 Future Extensions
+- Integrate real GPS & IoT data instead of mock data  
+- Connect to live weather/traffic APIs  
+- Use ML models (LSTM, Prophet) for demand forecasting  
+- Advanced Remaining Useful Life (RUL) prediction  
+- Cross-company shared equipment pools  
+- ESG-compliant sustainability reporting  
 
-Google OR-Tools (VRP solver)
+---
 
-Streamlit (interactive dashboard)
-
-fpdf2 (PDF reporting)
-
-💡 Future Extensions
-Integrate real GPS & IoT data instead of mock data
-
-Connect to live weather/traffic APIs
-
-Use ML models (LSTM, Prophet) for demand forecasting
-
-Advanced Remaining Useful Life (RUL) prediction
-
-Cross-company shared equipment pools
-
-ESG-compliant sustainability reporting
-
-👥 Team
+## 👥 Team
 Hackathon project for RPM Hire – Sustainable Fleet & Equipment Management
