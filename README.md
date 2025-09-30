@@ -9,13 +9,13 @@ The system integrates **mock data generation, demand forecasting, route optimiza
 ```text
 📦 AnyAI-main
 ├── data/
-├── src/
 │   ├── cctv_data.csv
 │   ├── equipment_location.csv
 │   ├── gps_data.csv
 │   ├── rental_history.csv
 │   ├── report.pdf
 │   ├── shared_pool.csv
+├── src/
 │   ├── cctv_data.py
 │   ├── circular_economy.py
 │   ├── dashboard.py
