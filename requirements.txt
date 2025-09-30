@@ -1,7 +1,17 @@
+# Core
 streamlit
 pandas
+numpy
+
+# Visualization
 plotly
 streamlit-option-menu
+
+# PDF report
 reportlab
-numpy
+
+# Machine Learning / Data
 scikit-learn
+
+# API & Utilities
+requests
