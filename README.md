@@ -64,7 +64,7 @@ This will:
 
 ### 2. Launch the Dashboard
 ```bash
-streamlit run src/dashboard.py
+APP_USERNAME=admin APP_PASSWORD=<your-password> streamlit run app.py
 ```
 
 The dashboard shows:

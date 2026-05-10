@@ -1,6 +1,7 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
+import os
 
 # Import your modules
 from src.data_pipeline import generate_gps_data, generate_rental_history
@@ -17,7 +18,7 @@ from src.external_api import get_weather_forecast
 from src.report_generator import generate_report
 from src.kpi import KPIWeights
 
-# --- Fake login ---
+# --- Demo login ---
 def login_page():
     st.set_page_config(page_title="RPM Hire AI System", layout="centered")
     st.title("🔒 RPM Hire Internal System")
@@ -25,9 +26,11 @@ def login_page():
 
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
+    expected_username = os.getenv("APP_USERNAME", "admin")
+    expected_password = os.getenv("APP_PASSWORD")
 
     if st.button("Login"):
-        if username == "admin" and password == "1234":
+        if expected_password and username == expected_username and password == expected_password:
             st.session_state["logged_in"] = True
             st.rerun()
         else:
