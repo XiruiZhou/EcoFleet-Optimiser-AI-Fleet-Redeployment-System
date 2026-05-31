@@ -1,6 +1,6 @@
 # src/route_vrp.py
 
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 import numpy as np
 from ortools.constraint_solver import pywrapcp, routing_enums_pb2
 from .kpi import KPIWeights, normalize_weights
@@ -34,11 +34,17 @@ def _congestion_matrix(n: int, base: float = 0.1, seed=42):
                 mat[i][j] = float(np.clip(base + rng.uniform(0, 0.5), 0, 1.0))
     return mat
 
+def _normalize_matrix(matrix):
+    max_value = max(max(row) for row in matrix)
+    if max_value == 0:
+        return matrix
+    return [[value / max_value for value in row] for row in matrix]
+
 def optimize_route(
     use_mock: bool = True,
     coords: List[Tuple[float, float]] = None,
     vehicle_count: int = 1,
-    emission_factor_kg_per_km: float = 0.25, 
+    emission_factor_kg_per_km: float = 0.25,
     avg_speed_kmph: float = 40.0,
     weights: KPIWeights = KPIWeights(1,1,1,1)
 ):
@@ -51,8 +57,30 @@ def optimize_route(
     n = len(coords)
     dist = _distance_matrix(coords)               # km
     cong = _congestion_matrix(n)                  # 0~1
-    time_h = [[(dist[i][j] / avg_speed_kmph) for j in range(n)] for i in range(n)]  # hr
-    co2   = [[dist[i][j] * emission_factor_kg_per_km for j in range(n)] for i in range(n)]
+    # Congestion changes speed and stop-start emissions. Without these edge-level
+    # effects, distance, time and CO2 are proportional and their sliders are
+    # mathematically equivalent.
+    time_h = [
+        [
+            (dist[i][j] / avg_speed_kmph) * (1.0 + 1.5 * cong[i][j])
+            for j in range(n)
+        ]
+        for i in range(n)
+    ]
+    co2 = [
+        [
+            dist[i][j] * emission_factor_kg_per_km * (1.0 + 0.5 * cong[i][j])
+            for j in range(n)
+        ]
+        for i in range(n)
+    ]
+
+    # Each KPI is normalized independently so a slider expresses preference,
+    # not the original unit scale (kilometres versus hours versus kilograms).
+    norm_dist = _normalize_matrix(dist)
+    norm_time = _normalize_matrix(time_h)
+    norm_co2 = _normalize_matrix(co2)
+    norm_cong = _normalize_matrix(cong)
 
 
     manager = pywrapcp.RoutingIndexManager(n, vehicle_count, 0)  # depot=0
@@ -61,10 +89,10 @@ def optimize_route(
     def cost_cb(from_index, to_index):
         i, j = manager.IndexToNode(from_index), manager.IndexToNode(to_index)
         cost = (
-            w.distance * dist[i][j] +
-            w.time     * time_h[i][j] * 10.0 +  
-            w.co2      * co2[i][j]    * 0.1 +  
-            w.congestion * cong[i][j] * 10.0
+            w.distance * norm_dist[i][j] +
+            w.time * norm_time[i][j] +
+            w.co2 * norm_co2[i][j] +
+            w.congestion * norm_cong[i][j]
         )
         return int(round(cost * 1000))
 
@@ -81,7 +109,12 @@ def optimize_route(
     solution = routing.SolveWithParameters(search)
 
     if solution is None:
-        return ["No feasible route"], {"distance_km":0,"time_hr":0,"co2_kg":0,"congestion":0}
+        return ["No feasible route"], {
+            "distance_km": 0,
+            "time_hr": 0,
+            "co2_kg": 0,
+            "congestion_index": 0
+        }
 
     index = routing.Start(0)
     order = [0]
@@ -105,5 +138,4 @@ def optimize_route(
             "congestion_index": round(total_cong, 2)
         }
     )
-
 
