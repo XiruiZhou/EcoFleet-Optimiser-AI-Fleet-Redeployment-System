@@ -1,3 +1,5 @@
+import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -89,8 +91,19 @@ def dashboard():
 
 
     gps_df = generate_gps_data()
+
+    # Use the first 9 GPS points as route nodes: N0 to N8
+    route_nodes_df = gps_df.head(9).reset_index(drop=True)
+    route_coords = list(zip(route_nodes_df["lat"], route_nodes_df["lon"]))
+
     demand_forecast = forecast_demand("data/rental_history.csv")
-    route, route_metrics = optimize_route(use_mock=True, weights=kpi_w)
+
+    # Optimise route based on the same nodes shown on the map
+        route, route_metrics = optimize_route(
+        use_mock=False,
+        coords=route_coords,
+        weights=kpi_w
+    )
     lifecycle_status = check_equipment_health()
     cctv = generate_cctv_data()
     pool = generate_shared_pool()
@@ -183,7 +196,48 @@ def dashboard():
         c4.metric("Congestion idx",m["congestion_index"])
 
         st.caption("Tip: Tip: Adjust the KPI weights on the left to instantly change the route and metrics.")
-        st.map(gps_df[["lat", "lon"]], zoom=5)
+        if route and route[0] != "No feasible route":
+            route_indices = [int(node.replace("N", "")) for node in route]
+            route_plot_df = route_nodes_df.iloc[route_indices].copy()
+            route_plot_df["node"] = route
+        
+            fig_route = go.Figure()
+        
+            # Show all route nodes
+            fig_route.add_trace(go.Scattermapbox(
+                lat=route_nodes_df["lat"],
+                lon=route_nodes_df["lon"],
+                mode="markers+text",
+                text=[f"N{i}" for i in range(len(route_nodes_df))],
+                textposition="top center",
+                name="Route Nodes"
+            ))
+        
+            # Draw optimal route line
+            fig_route.add_trace(go.Scattermapbox(
+                lat=route_plot_df["lat"],
+                lon=route_plot_df["lon"],
+                mode="lines+markers+text",
+                text=route_plot_df["node"],
+                textposition="bottom center",
+                name="Optimal Route"
+            ))
+        
+            fig_route.update_layout(
+                mapbox_style="open-street-map",
+                mapbox_zoom=5,
+                mapbox_center={
+                    "lat": route_nodes_df["lat"].mean(),
+                    "lon": route_nodes_df["lon"].mean()
+                },
+                height=600,
+                margin={"r": 0, "t": 0, "l": 0, "b": 0}
+            )
+        
+            st.plotly_chart(fig_route, use_container_width=True)
+        
+        else:
+            st.warning("No feasible route found.")
 
     # --- Lifecycle & CCTV ---
     with tab3:
